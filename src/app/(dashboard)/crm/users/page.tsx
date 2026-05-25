@@ -6,13 +6,18 @@ import UserList from './UserList'
 
 export default async function UsersPage() {
   const session = await getServerSession(authOptions)
-  if (!session) redirect('/login')
+  if (!session) redirect('/login?error=unauthorized')
   if (session.user.role !== 'OWNER') redirect('/crm/dashboard')
 
-  const users = await prisma.user.findMany({
-    select: { id: true, name: true, email: true, role: true, createdAt: true },
-    orderBy: { createdAt: 'desc' },
-  })
+  let users
+  try {
+    users = await prisma.user.findMany({
+      select: { id: true, name: true, email: true, role: true, createdAt: true },
+      orderBy: { createdAt: 'desc' },
+    })
+  } catch {
+    redirect('/login?error=db_error')
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-5">

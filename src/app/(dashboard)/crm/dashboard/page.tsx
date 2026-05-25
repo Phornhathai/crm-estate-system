@@ -22,39 +22,43 @@ const visibleStatuses = ['NEW', 'FOLLOWING', 'TOURING', 'BOOKING_INTENT', 'BOOKE
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
-  if (!session) redirect('/login')
-
-  const isOwner = session.user.role === 'OWNER'
-  const baseWhere = isOwner ? {} : { salerId: session.user.id }
-  const activeWhere = { ...baseWhere, status: { not: 'IGNORE' as const } }
+  if (!session) redirect('/login?error=unauthorized')
 
   const now = new Date()
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
-  const monthWhere = { ...baseWhere, createdAt: { gte: monthStart }, status: { not: 'IGNORE' as const } }
+  let leads, totalLeads, statsByStatus, monthlyLeads
+  try {
+    const isOwnerCheck = session.user.role === 'OWNER'
+    const baseWhere = isOwnerCheck ? {} : { salerId: session.user.id }
+    const activeWhere = { ...baseWhere, status: { not: 'IGNORE' as const } }
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+    const monthWhere = { ...baseWhere, createdAt: { gte: monthStart }, status: { not: 'IGNORE' as const } }
 
-  const [leads, totalLeads, statsByStatus, monthlyLeads] = await Promise.all([
-    prisma.lead.findMany({
-      where: activeWhere,
-      include: { saler: { select: { name: true } } },
-      orderBy: { updatedAt: 'desc' },
-      take: 10,
-    }),
-    prisma.lead.count({ where: activeWhere }),
-    prisma.lead.groupBy({
-      by: ['status'],
-      where: baseWhere,
-      _count: true,
-    }),
-    prisma.lead.findMany({
-      where: monthWhere,
-      select: {
-        interestType: true,
-        unitPrice: true,
-        netCommission: true,
-        status: true,
-      },
-    }),
-  ])
+    ;[leads, totalLeads, statsByStatus, monthlyLeads] = await Promise.all([
+      prisma.lead.findMany({
+        where: activeWhere,
+        include: { saler: { select: { name: true } } },
+        orderBy: { updatedAt: 'desc' },
+        take: 10,
+      }),
+      prisma.lead.count({ where: activeWhere }),
+      prisma.lead.groupBy({
+        by: ['status'],
+        where: baseWhere,
+        _count: true,
+      }),
+      prisma.lead.findMany({
+        where: monthWhere,
+        select: {
+          interestType: true,
+          unitPrice: true,
+          netCommission: true,
+          status: true,
+        },
+      }),
+    ])
+  } catch {
+    redirect('/login?error=db_error')
+  }
 
   const stats = Object.fromEntries(statsByStatus.map(s => [s.status, s._count]))
 

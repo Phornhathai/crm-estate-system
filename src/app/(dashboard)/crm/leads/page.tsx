@@ -23,18 +23,22 @@ const sourceLabel: Record<string, string> = {
 
 export default async function LeadsPage() {
   const session = await getServerSession(authOptions)
-  if (!session) redirect('/login')
+  if (!session) redirect('/login?error=unauthorized')
 
-  const where = session.user.role === 'SALE' ? { salerId: session.user.id } : {}
-
-  const leads = await prisma.lead.findMany({
-    where,
-    include: {
-      saler: { select: { name: true } },
-      _count: { select: { followUps: true } },
-    },
-    orderBy: { updatedAt: 'desc' },
-  })
+  let leads
+  try {
+    const where = session.user.role === 'SALE' ? { salerId: session.user.id } : {}
+    leads = await prisma.lead.findMany({
+      where,
+      include: {
+        saler: { select: { name: true } },
+        _count: { select: { followUps: true } },
+      },
+      orderBy: { updatedAt: 'desc' },
+    })
+  } catch {
+    redirect('/login?error=db_error')
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-5">

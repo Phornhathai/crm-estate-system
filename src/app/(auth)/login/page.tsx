@@ -2,10 +2,19 @@
 
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+
+const systemErrors: Record<string, string> = {
+  system_error: 'ระบบขัดข้อง กรุณาแจ้งผู้ดูแลระบบ',
+  db_error: 'เชื่อมต่อฐานข้อมูลไม่ได้ กรุณาแจ้งผู้ดูแลระบบ',
+  unauthorized: 'Session หมดอายุ กรุณาเข้าสู่ระบบใหม่',
+}
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const systemError = searchParams.get('error')
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -37,6 +46,17 @@ export default function LoginPage() {
           <h1 className="text-2xl font-bold text-gray-900">เข้าสู่ระบบ</h1>
           <p className="text-gray-500 text-sm mt-1">CRM System</p>
         </div>
+
+        {systemError && (
+          <div className="mb-4 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+            <p className="text-red-700 text-sm font-medium">
+              {systemErrors[systemError] || 'เกิดข้อผิดพลาดในระบบ กรุณาแจ้งผู้ดูแลระบบ'}
+            </p>
+            {systemError !== 'unauthorized' && (
+              <p className="text-red-500 text-xs mt-1">รหัสข้อผิดพลาด: {systemError}</p>
+            )}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String     @id @default(cuid())
+  name      String
+  email     String     @unique
+  password  String
+  role      Role       @default(SALE)
+  leads     Lead[]
+  followUps FollowUp[]
+  createdAt DateTime   @default(now())
+}
+
+enum Role {
+  SALE
+  OWNER
+}
+
+model Lead {
+  id        String     @id @default(cuid())
+  name      String
+  phone     String
+  detail    String?
+  status    LeadStatus @default(NEW)
+  saler     User       @relation(fields: [salerId], references: [id])
+  salerId   String
+  followUps FollowUp[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+enum LeadStatus {
+  NEW
+  FOLLOWING
+  BOOKING_INTENT
+  BOOKED
+  LOST
+}
+
+model FollowUp {
+  id        String   @id @default(cuid())
+  note      String
+  lead      Lead     @relation(fields: [leadId], references: [id])
+  leadId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+}

@@ -11,6 +11,24 @@ type Duplicate = {
   saler: { name: string }
 }
 
+function formatPhone(value: string) {
+  const digits = value.replace(/\D/g, '').slice(0, 10)
+  if (digits.length <= 3) return digits
+  if (digits.length <= 6) return `${digits.slice(0, 3)}-${digits.slice(3)}`
+  return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`
+}
+
+function formatMoney(value: string) {
+  const raw = value.replace(/[^0-9.]/g, '')
+  const parts = raw.split('.')
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return parts.length > 1 ? `${parts[0]}.${parts[1]}` : parts[0]
+}
+
+function unformatMoney(value: string) {
+  return value.replace(/,/g, '')
+}
+
 export default function NewLeadPage() {
   const router = useRouter()
   const [form, setForm] = useState({
@@ -38,9 +56,9 @@ export default function NewLeadPage() {
   }, [form.name, form.phone, checkDuplicate])
 
   useEffect(() => {
-    const price = parseFloat(form.unitPrice) || 0
+    const price = parseFloat(unformatMoney(form.unitPrice)) || 0
     const rate = parseFloat(form.commissionRate) || 0
-    const coFee = form.hasCoAgent ? (parseFloat(form.coAgentFee) || 0) : 0
+    const coFee = form.hasCoAgent ? (parseFloat(unformatMoney(form.coAgentFee)) || 0) : 0
 
     if (form.interestType === 'SELLING') {
       const commission = price * (rate / 100)
@@ -61,7 +79,12 @@ export default function NewLeadPage() {
     const res = await fetch('/api/leads', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        ...form,
+        unitPrice: unformatMoney(form.unitPrice),
+        coAgentFee: unformatMoney(form.coAgentFee),
+        netCommission: unformatMoney(form.netCommission),
+      }),
     })
 
     setLoading(false)
@@ -116,7 +139,7 @@ export default function NewLeadPage() {
           <input
             type="tel"
             value={form.phone}
-            onChange={e => setForm({ ...form, phone: e.target.value })}
+            onChange={e => setForm({ ...form, phone: formatPhone(e.target.value) })}
             className={inputClass}
             placeholder="08x-xxx-xxxx"
             required
@@ -171,9 +194,10 @@ export default function NewLeadPage() {
                 {form.interestType === 'SELLING' ? 'ราคา Unit (บาท)' : 'ค่าเช่า/เดือน (บาท)'}
               </label>
               <input
-                type="number"
+                type="text"
+                inputMode="numeric"
                 value={form.unitPrice}
-                onChange={e => setForm({ ...form, unitPrice: e.target.value })}
+                onChange={e => setForm({ ...form, unitPrice: formatMoney(e.target.value) })}
                 className={inputClass}
                 placeholder={form.interestType === 'SELLING' ? '1,000,000' : '50,000'}
               />
@@ -183,10 +207,10 @@ export default function NewLeadPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Commission (%)</label>
                 <input
-                  type="number"
-                  step="0.1"
+                  type="text"
+                  inputMode="decimal"
                   value={form.commissionRate}
-                  onChange={e => setForm({ ...form, commissionRate: e.target.value })}
+                  onChange={e => setForm({ ...form, commissionRate: e.target.value.replace(/[^0-9.]/g, '') })}
                   className={inputClass}
                   placeholder="3"
                 />
@@ -211,10 +235,10 @@ export default function NewLeadPage() {
                   {form.interestType === 'SELLING' ? 'ค่า Co-Agent (%)' : 'ค่า Co-Agent (บาท)'}
                 </label>
                 <input
-                  type="number"
-                  step="0.01"
+                  type="text"
+                  inputMode="decimal"
                   value={form.coAgentFee}
-                  onChange={e => setForm({ ...form, coAgentFee: e.target.value })}
+                  onChange={e => setForm({ ...form, coAgentFee: form.interestType === 'SELLING' ? e.target.value.replace(/[^0-9.]/g, '') : formatMoney(e.target.value) })}
                   className={inputClass}
                   placeholder={form.interestType === 'SELLING' ? '0.5' : '10,000'}
                 />

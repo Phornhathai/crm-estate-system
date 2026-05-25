@@ -76,9 +76,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p className="text-xs text-gray-400 mt-6 text-center">
-          owner@crm.com / sale1@crm.com · password: password123
-        </p>
       </div>
     </div>
   )

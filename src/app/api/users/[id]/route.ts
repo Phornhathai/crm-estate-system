@@ -14,9 +14,20 @@ export async function DELETE(_request: NextRequest, { params }: { params: Promis
     return Response.json({ error: 'Cannot delete yourself' }, { status: 400 })
   }
 
-  const user = await prisma.user.findUnique({ where: { id } })
+  const user = await prisma.user.findUnique({
+    where: { id },
+    include: { _count: { select: { leads: true, followUps: true } } },
+  })
   if (!user) return Response.json({ error: 'User not found' }, { status: 404 })
 
+  if (user._count.leads > 0) {
+    return Response.json(
+      { error: `ลบไม่ได้ — ผู้ใช้นี้มี ${user._count.leads} Lead อยู่ ต้องย้าย Lead ก่อน` },
+      { status: 400 }
+    )
+  }
+
+  await prisma.followUp.deleteMany({ where: { userId: id } })
   await prisma.user.delete({ where: { id } })
 
   return Response.json({ success: true })

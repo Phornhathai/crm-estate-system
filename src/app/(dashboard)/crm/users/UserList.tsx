@@ -48,6 +48,9 @@ export default function UserList({ initialUsers, currentUserId }: { initialUsers
     const res = await fetch(`/api/users/${id}`, { method: 'DELETE' })
     if (res.ok) {
       setUsers(users.filter(u => u.id !== id))
+    } else {
+      const data = await res.json()
+      alert(data.error || 'ลบไม่สำเร็จ')
     }
   }
 

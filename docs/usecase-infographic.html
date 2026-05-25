@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM System — Use Case Overview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: #f0f4ff;
+    color: #1a1a2e;
+    padding: 40px 24px;
+  }
+
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .header .badge {
+    display: inline-block;
+    background: #e0e7ff;
+    color: #4338ca;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 99px;
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #1e1b4b;
+    line-height: 1.2;
+  }
+  .header p {
+    font-size: 16px;
+    color: #6b7280;
+    margin-top: 10px;
+  }
+
+  /* ROLES GRID */
+  .roles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .role-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+
+  .role-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid #f3f4f6;
+  }
+
+  .role-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .sale .role-icon { background: #dbeafe; }
+  .owner .role-icon { background: #fef3c7; }
+
+  .role-title { font-size: 18px; font-weight: 700; }
+  .role-sub { font-size: 13px; color: #9ca3af; margin-top: 2px; }
+
+  .sale .role-title { color: #1d4ed8; }
+  .owner .role-title { color: #b45309; }
+
+  /* UC ITEMS */
+  .uc-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .uc-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #f9fafb;
+  }
+
+  .uc-num {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 99px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .sale .uc-num { background: #dbeafe; color: #1d4ed8; }
+  .owner .uc-num { background: #fef3c7; color: #b45309; }
+
+  .uc-text .title { font-size: 14px; font-weight: 600; color: #111827; }
+  .uc-text .desc { font-size: 13px; color: #6b7280; margin-top: 3px; line-height: 1.5; }
+
+  /* LIMIT TAGS */
+  .limit-box {
+    margin-top: 20px;
+    padding: 12px 14px;
+    background: #fff1f2;
+    border-radius: 12px;
+    border-left: 3px solid #f87171;
+  }
+  .limit-box .limit-title { font-size: 12px; font-weight: 700; color: #ef4444; margin-bottom: 6px; }
+  .limit-box .limit-item { font-size: 13px; color: #6b7280; margin-top: 4px; }
+
+  /* FLOW SECTION */
+  .flow-section {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #6366f1;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e1b4b;
+    margin-bottom: 24px;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .flow-bubble {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  .flow-step:nth-child(1) .flow-bubble { background: #dbeafe; }
+  .flow-step:nth-child(3) .flow-bubble { background: #fef3c7; }
+  .flow-step:nth-child(5) .flow-bubble { background: #d1fae5; }
+  .flow-step:nth-child(7) .flow-bubble { background: #ede9fe; }
+
+  .flow-label { font-size: 13px; font-weight: 600; color: #374151; }
+  .flow-sub { font-size: 11px; color: #9ca3af; margin-top: 4px; }
+
+  .flow-arrow {
+    font-size: 20px;
+    color: #d1d5db;
+    flex-shrink: 0;
+    padding: 0 4px;
+    margin-bottom: 24px;
+  }
+
+  .flow-note {
+    margin-top: 20px;
+    padding: 12px 16px;
+    background: #fffbeb;
+    border-radius: 12px;
+    border-left: 3px solid #f59e0b;
+    font-size: 13px;
+    color: #78716c;
+  }
+
+  /* PERMISSION TABLE */
+  .perm-section {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: #f9fafb; }
+  th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    border-bottom: 2px solid #f3f4f6;
+  }
+  th:not(:first-child) { text-align: center; }
+  td {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  td:not(:first-child) { text-align: center; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+
+  .check { color: #10b981; font-size: 18px; }
+  .cross { color: #d1d5db; font-size: 18px; }
+  .partial { color: #f59e0b; font-size: 13px; font-weight: 600; }
+
+  .col-sale { color: #1d4ed8; font-weight: 700; }
+  .col-owner { color: #b45309; font-weight: 700; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 12px;
+    color: #d1d5db;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="badge">Phase 1 — CRM System</div>
+    <h1>ระบบ CRM<br>สำหรับทีมขาย</h1>
+    <p>ภาพรวม Use Case แยกตาม Role ของผู้ใช้งาน</p>
+  </div>
+
+  <!-- ROLE CARDS -->
+  <div class="roles">
+
+    <!-- SALE -->
+    <div class="role-card sale">
+      <div class="role-header">
+        <div class="role-icon">👤</div>
+        <div>
+          <div class="role-title">Sale — พนักงานขาย</div>
+          <div class="role-sub">เข้าถึงข้อมูลเฉพาะของตัวเอง</div>
+        </div>
+      </div>
+      <div class="uc-list">
+        <div class="uc-item">
+          <span class="uc-num">S1</span>
+          <div class="uc-text">
+            <div class="title">เข้าสู่ระบบ</div>
+            <div class="desc">Login ด้วย email + password → ระบบพาไป Dashboard อัตโนมัติ</div>
+          </div>
+        </div>
+        <div class="uc-item">
+          <span class="uc-num">S2</span>
+          <div class="uc-text">
+            <div class="title">ดู Dashboard ของตัวเอง</div>
+            <div class="desc">เห็นสถิติ Lead เฉพาะที่ตัวเองดูแล แยกตามสถานะ</div>
+          </div>
+        </div>
+        <div class="uc-item">
+          <span class="uc-num">S3</span>
+          <div class="uc-text">
+            <div class="title">ดูรายการ Lead</div>
+            <div class="desc">เห็นชื่อ เบอร์ สถานะ และจำนวน Follow Up ของ Lead ตัวเอง</div>
+          </div>
+        </div>
+        <div class="uc-item">
+          <span class="uc-num">S4</span>
+          <div class="uc-text">
+            <div class="title">เพิ่ม Lead ใหม่</div>
+            <div class="desc">กรอกชื่อ + เบอร์โทร (บังคับ) + รายละเอียด (ไม่บังคับ)</div>
+          </div>
+        </div>
+        <div class="uc-item">
+          <span class="uc-num">S5</span>
+          <div class="uc-text">
+            <div class="title">เปลี่ยนสถานะ Lead</div>
+            <div class="desc">ใหม่ → ติดตาม → สนใจจอง → จองแล้ว / หลุด</div>
+          </div>
+        </div>
+        <div class="uc-item">
+          <span class="uc-num">S6</span>
+          <div class="uc-text">
+            <div class="title">บันทึก Follow Up</div>
+            <div class="desc">พิมพ์หมายเหตุ บันทึกพร้อมวันเวลา เก็บประวัติทุกครั้ง</div>
+          </div>
+        </div>
+      </div>
+      <div class="limit-box">
+        <div class="limit-title">⚠️ ข้อจำกัด</div>
+        <div class="limit-item">ไม่เห็น Lead ของพนักงานคนอื่น</div>
+        <div class="limit-item">ไม่สามารถลบ Lead ได้</div>
+      </div>
+    </div>
+
+    <!-- OWNER -->
+    <div class="role-card owner">
+      <div class="role-header">
+        <div class="role-icon">👑</div>
+        <div>
+          <div class="role-title">Owner — เจ้าของกิจการ</div>
+          <div class="role-sub">เข้าถึงข้อมูลทั้งระบบ</div>
+        </div>
+      </div>
+      <div class="uc-list">
+        <div class="uc-item">
+          <span class="uc-num">O1</span>
+          <div class="uc-text">
+            <div class="title">เข้าสู่ระบบ</div>
+            <div class="desc">Login เหมือน Sale แต่ได้สิทธิ์ดูข้อมูลทั้งระบบ</div>
+          </div>
+        </div>
+        <div class="uc-item">
+          <span class="uc-num">O2</span>
+          <div class="uc-text">
+            <div class="title">ดู Dashboard ภาพรวม</div>
+            <div class="desc">เห็นสถิติ Lead ของพนักงานทุกคนรวมกัน พร้อมชื่อ Sale ที่ดูแล</div>
+          </div>
+        </div>
+        <div class="uc-item">
+          <span class="uc-num">O3</span>
+          <div class="uc-text">
+            <div class="title">ดูรายการ Lead ทั้งหมด</div>
+            <div class="desc">เห็น Lead ทุกรายการของทุก Sale พร้อมชื่อผู้รับผิดชอบ</div>
+          </div>
+        </div>
+        <div class="uc-item">
+          <span class="uc-num">O4</span>
+          <div class="uc-text">
+            <div class="title">เพิ่ม / แก้ไข Lead ใดก็ได้</div>
+            <div class="desc">เพิ่ม Lead ใหม่ หรือเปลี่ยนสถานะ Lead ของพนักงานคนใดก็ได้</div>
+          </div>
+        </div>
+        <div class="uc-item">
+          <span class="uc-num">O5</span>
+          <div class="uc-text">
+            <div class="title">บันทึก Follow Up ทุก Lead</div>
+            <div class="desc">บันทึก note ลงใน Lead ของใครก็ได้ โดยระบุชื่อผู้บันทึกไว้</div>
+          </div>
+        </div>
+        <div class="uc-item">
+          <span class="uc-num">O6</span>
+          <div class="uc-text">
+            <div class="title">ลบ Lead</div>
+            <div class="desc">ลบ Lead พร้อม Follow Up ทั้งหมด (เฉพาะ Owner เท่านั้น)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow-section">
+    <div class="section-label">Integration Flow</div>
+    <div class="section-title">การเชื่อมโยง CRM → Stock</div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-bubble">👤</div>
+        <div class="flow-label">Sale บันทึก Lead</div>
+        <div class="flow-sub">ติดตามลูกค้า</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-bubble">🔔</div>
+        <div class="flow-label">เปลี่ยนสถานะ</div>
+        <div class="flow-sub">สนใจจอง</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-bubble">📋</div>
+        <div class="flow-label">ข้อมูลส่งไป Stock</div>
+        <div class="flow-sub">รายการรอเลือกยูนิต</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-bubble">✅</div>
+        <div class="flow-label">Staff เลือกยูนิต</div>
+        <div class="flow-sub">ยืนยันการจอง</div>
+      </div>
+    </div>
+    <div class="flow-note">
+      ⚠️ <strong>กึ่งอัตโนมัติ:</strong> การเปลี่ยนสถานะเป็น "จองแล้ว" ต้องผ่านการยืนยันจากผู้ใช้งานในระบบ Stock ทุกครั้ง ไม่ได้เกิดขึ้นอัตโนมัติ
+    </div>
+  </div>
+
+  <!-- PERMISSION TABLE -->
+  <div class="perm-section">
+    <div class="section-label">Access Control</div>
+    <div class="section-title">ตารางสิทธิ์การใช้งาน</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th class="col-sale">👤 Sale</th>
+          <th class="col-owner">👑 Owner</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>เข้าสู่ระบบ</td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>ดู Lead ของตัวเอง</td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>ดู Lead ของทุกคน</td>
+          <td><span class="cross">—</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>เพิ่ม Lead ใหม่</td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>เปลี่ยนสถานะ Lead</td>
+          <td><span class="partial">เฉพาะของตน</span></td>
+          <td><span class="check">✓ ทั้งหมด</span></td>
+        </tr>
+        <tr>
+          <td>บันทึก Follow Up</td>
+          <td><span class="partial">เฉพาะของตน</span></td>
+          <td><span class="check">✓ ทั้งหมด</span></td>
+        </tr>
+        <tr>
+          <td>ลบ Lead</td>
+          <td><span class="cross">—</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Dashboard ภาพรวมทีม</td>
+          <td><span class="cross">—</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>จัดการระบบ Stock</td>
+          <td><span class="cross">—</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">CRM System — Phase 1 · ระบบจัดการ Lead & Follow Up สำหรับทีมขาย</div>
+
+</div>
+</body>
+</html>

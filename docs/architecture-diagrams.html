@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM System — Architecture Diagrams (Phase 1)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 48px 24px;
+    }
+
+    h1.page-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 6px;
+    }
+    .page-sub {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 64px;
+    }
+
+    /* ─── Section ─── */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto 72px;
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .diagram-label {
+      font-size: 0.78rem;
+      color: #475569;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── Diagram 1: Phase 1 Overview ─── */
+    .phase-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .module-card {
+      border-radius: 14px;
+      padding: 28px 24px;
+      border: 1.5px solid;
+    }
+    .module-card.done {
+      background: #0c1a2e;
+      border-color: #1d4ed8;
+    }
+    .module-card.pending {
+      background: #131313;
+      border-color: #334155;
+      opacity: 0.7;
+    }
+    .module-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .module-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-done { background: #1d4ed8; color: #bfdbfe; }
+    .badge-pending { background: #1e293b; color: #64748b; }
+    .module-title { font-size: 1.15rem; font-weight: 700; }
+    .module-card.done .module-title { color: #60a5fa; }
+    .module-card.pending .module-title { color: #475569; }
+
+    .feature-list { list-style: none; }
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .feature-list li:last-child { border-bottom: none; }
+    .fi { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+    .role-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .role-chip {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.83rem;
+    }
+    .role-chip .role-name { font-weight: 700; color: #38bdf8; margin-bottom: 6px; }
+    .role-chip.owner .role-name { color: #f59e0b; }
+    .role-chip ul { padding-left: 14px; color: #94a3b8; }
+    .role-chip li { margin-bottom: 3px; }
+
+    .flow-strip {
+      margin-top: 20px;
+      background: #0a1628;
+      border: 1px solid #1e3a5f;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.83rem;
+      color: #7dd3fc;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .flow-strip span { white-space: nowrap; }
+    .flow-arrow { color: #2563eb; font-weight: 700; margin: 0 4px; }
+
+    /* ─── Diagram 2: Architecture ─── */
+    .arch-container {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .arch-layer {
+      flex: 1;
+      background: #0d1520;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .arch-layer-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #475569;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .arch-arrow-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-top: 40px;
+      color: #334155;
+      font-size: 1.2rem;
+    }
+    .arch-file {
+      background: #131c2b;
+      border: 1px solid #1e3a5f;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+    }
+    .arch-file:last-child { margin-bottom: 0; }
+    .arch-file .filename { color: #60a5fa; font-weight: 600; }
+    .arch-file .filedesc { color: #475569; font-size: 0.68rem; margin-top: 2px; }
+    .arch-file.highlight-new {
+      border-color: #f59e0b;
+      background: #1a1200;
+    }
+    .arch-file.highlight-new .filename { color: #fbbf24; }
+    .arch-file.highlight-changed {
+      border-color: #16a34a;
+      background: #001a0a;
+    }
+    .arch-file.highlight-changed .filename { color: #4ade80; }
+
+    .legend-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.78rem;
+      color: #64748b;
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .dot-new { background: #f59e0b; }
+    .dot-changed { background: #16a34a; }
+    .dot-normal { background: #1e3a5f; }
+
+    /* ─── Diagram 3: Build Order ─── */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .step-card {
+      background: #0d1520;
+      border: 1.5px solid #1e293b;
+      border-radius: 12px;
+      padding: 18px 16px;
+      position: relative;
+    }
+    .step-card.done-step { border-color: #1d4ed8; background: #080f1e; }
+    .step-num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .step-card.done-step .step-num { color: #1d4ed8; }
+    .step-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .step-files {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .step-file {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.67rem;
+      color: #475569;
+      background: #131c2b;
+      border-radius: 4px;
+      padding: 3px 7px;
+    }
+    .step-file.new-file { color: #fbbf24; background: #1a1200; }
+    .step-file.changed-file { color: #4ade80; background: #001a0a; }
+    .step-note {
+      font-size: 0.72rem;
+      color: #f59e0b;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #1e293b;
+      line-height: 1.4;
+    }
+
+    /* ─── Callout box ─── */
+    .callout {
+      background: #0c1a0c;
+      border: 1px solid #16a34a;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.85rem;
+      color: #86efac;
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+    .callout strong { color: #4ade80; }
+
+    .callout-warn {
+      background: #1a0a00;
+      border-color: #f59e0b;
+      color: #fcd34d;
+    }
+    .callout-warn strong { color: #fbbf24; }
+
+    @media (max-width: 768px) {
+      .phase-grid, .steps-grid { grid-template-columns: 1fr; }
+      .arch-container { flex-direction: column; }
+      .arch-arrow-col { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<h1 class="page-title">CRM System — Architecture Diagrams</h1>
+<p class="page-sub">Phase 1 · อัปเดตให้ตรงกับระบบที่สร้างจริง · Next.js 16 + Prisma 7 + NextAuth</p>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- DIAGRAM 1: PHASE 1 OVERVIEW                                    -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Diagram 1 — Phase 1 Overview</div>
+  <div class="diagram-label">ภาพรวม Module ที่ทำใน Phase 1</div>
+
+  <div class="phase-grid">
+    <!-- CRM Module -->
+    <div class="module-card done">
+      <div class="module-header">
+        <span class="module-badge badge-done">✅ เสร็จแล้ว</span>
+        <span class="module-title">CRM Module</span>
+      </div>
+      <ul class="feature-list">
+        <li><span class="fi">📋</span><span><strong>Lead Management</strong> — เพิ่ม / ดู / เปลี่ยนสถานะ Lead</span></li>
+        <li><span class="fi">📝</span><span><strong>Follow Up</strong> — บันทึก note + ดูประวัติเรียงล่าสุด</span></li>
+        <li><span class="fi">📊</span><span><strong>Dashboard</strong> — สถิติตามสถานะ + รายการล่าสุด</span></li>
+        <li><span class="fi">🔗</span><span><strong>CRM → Stock Link</strong> — สถานะ BOOKING_INTENT ส่งต่อ Stock</span></li>
+        <li><span class="fi">🔐</span><span><strong>Auth</strong> — Login + Role-based (Sale / Owner)</span></li>
+      </ul>
+
+      <div class="role-row">
+        <div class="role-chip">
+          <div class="role-name">👤 Sale</div>
+          <ul>
+            <li>เห็น Lead ของตัวเอง</li>
+            <li>เพิ่ม / เปลี่ยนสถานะ</li>
+            <li>บันทึก Follow Up</li>
+          </ul>
+        </div>
+        <div class="role-chip owner">
+          <div class="role-name">👑 Owner</div>
+          <ul>
+            <li>เห็น Lead ทั้งหมด</li>
+            <li>ลบ Lead ได้</li>
+            <li>ดู Dashboard รวม</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flow-strip">
+        <span>NEW</span>
+        <span class="flow-arrow">→</span>
+        <span>FOLLOWING</span>
+        <span class="flow-arrow">→</span>
+        <span>BOOKING_INTENT</span>
+        <span class="flow-arrow">→</span>
+        <span>BOOKED / LOST</span>
+      </div>
+    </div>
+
+    <!-- Stock Module -->
+    <div class="module-card pending">
+      <div class="module-header">
+        <span class="module-badge badge-pending">⏳ Phase 1 ถัดไป</span>
+        <span class="module-title">Stock Module</span>
+      </div>
+      <ul class="feature-list">
+        <li><span class="fi">🏗️</span><span><strong>รายการ Unit</strong> — แสดงสต็อกยูนิตทั้งหมด</span></li>
+        <li><span class="fi">⏳</span><span><strong>Pending List</strong> — Lead ที่สถานะ BOOKING_INTENT</span></li>
+        <li><span class="fi">✅</span><span><strong>ยืนยันการจอง</strong> — เลือกยูนิต → BOOKED</span></li>
+        <li><span class="fi">🃏</span><span><strong>Mock Data</strong> — ข้อมูล Unit จำลอง (Phase 1)</span></li>
+      </ul>
+
+      <div class="flow-strip" style="opacity:0.5; margin-top: 18px;">
+        <span>BOOKING_INTENT (CRM)</span>
+        <span class="flow-arrow">→</span>
+        <span>Staff เลือก Unit</span>
+        <span class="flow-arrow">→</span>
+        <span>BOOKED</span>
+      </div>
+
+      <div class="callout callout-warn" style="margin-top:16px; font-size:0.78rem;">
+        ⚠️ Stock module ยังไม่ได้สร้าง — Prisma schema (Unit model) + หน้า /stock ยังรอ
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- DIAGRAM 2: ARCHITECTURE                                        -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Diagram 2 — File Architecture</div>
+  <div class="diagram-label">โครงสร้างไฟล์จริงที่ใช้ในระบบ</div>
+
+  <div class="legend-row" style="margin-bottom:16px;">
+    <div class="legend-item"><div class="legend-dot dot-new"></div> ไฟล์ใหม่ที่เพิ่มจากแผนเดิม</div>
+    <div class="legend-item"><div class="legend-dot dot-changed"></div> ไฟล์ที่เปลี่ยนจากแผนเดิม</div>
+    <div class="legend-item"><div class="legend-dot dot-normal"></div> ตามแผนเดิม</div>
+  </div>
+
+  <div class="arch-container">
+
+    <!-- Entry & Auth -->
+    <div class="arch-layer">
+      <div class="arch-layer-title">🚪 Entry & Auth</div>
+
+      <div class="arch-file highlight-changed">
+        <div class="filename">src/proxy.ts</div>
+        <div class="filedesc">⚡ Next.js 16: ชื่อ middleware.ts → proxy.ts<br/>export function proxy (ไม่ใช่ middleware)</div>
+      </div>
+
+      <div class="arch-file">
+        <div class="filename">src/lib/auth.ts</div>
+        <div class="filedesc">NextAuth options, CredentialsProvider, bcrypt</div>
+      </div>
+
+      <div class="arch-file">
+        <div class="filename">src/types/index.ts</div>
+        <div class="filedesc">extend Session → id + role</div>
+      </div>
+
+      <div class="arch-file">
+        <div class="filename">app/api/auth/[...nextauth]/route.ts</div>
+        <div class="filedesc">GET + POST handler</div>
+      </div>
+
+      <div class="arch-file">
+        <div class="filename">app/(auth)/login/page.tsx</div>
+        <div class="filedesc">Login form → signIn()</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow-col">→</div>
+
+    <!-- Layout & Providers -->
+    <div class="arch-layer">
+      <div class="arch-layer-title">🏗️ Layout & Providers</div>
+
+      <div class="arch-file highlight-new">
+        <div class="filename">src/components/Providers.tsx</div>
+        <div class="filedesc">✨ เพิ่มใหม่: 'use client' wrapper<br/>แก้ปัญหา SessionProvider ใน Server Component</div>
+      </div>
+
+      <div class="arch-file highlight-changed">
+        <div class="filename">app/(dashboard)/layout.tsx</div>
+        <div class="filedesc">⚡ ใช้ &lt;Providers&gt; แทน &lt;SessionProvider&gt;<br/>เพราะ layout เป็น Server Component</div>
+      </div>
+
+      <div class="arch-file">
+        <div class="filename">app/(auth)/layout.tsx</div>
+        <div class="filedesc">Layout สำหรับหน้า Login (ไม่มี Sidebar)</div>
+      </div>
+
+      <div class="arch-file">
+        <div class="filename">src/components/layout/Sidebar.tsx</div>
+        <div class="filedesc">'use client' — nav links + signOut</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow-col">→</div>
+
+    <!-- Pages -->
+    <div class="arch-layer">
+      <div class="arch-layer-title">📄 Pages</div>
+
+      <div class="arch-file">
+        <div class="filename">app/page.tsx</div>
+        <div class="filedesc">redirect → /crm/dashboard</div>
+      </div>
+
+      <div class="arch-file">
+        <div class="filename">app/(dashboard)/crm/dashboard/page.tsx</div>
+        <div class="filedesc">Server Component — stats + recent leads</div>
+      </div>
+
+      <div class="arch-file">
+        <div class="filename">app/(dashboard)/crm/leads/page.tsx</div>
+        <div class="filedesc">Server Component — role-filtered list</div>
+      </div>
+
+      <div class="arch-file">
+        <div class="filename">app/(dashboard)/crm/leads/new/page.tsx</div>
+        <div class="filedesc">Client Component — POST /api/leads</div>
+      </div>
+
+      <div class="arch-file">
+        <div class="filename">app/(dashboard)/crm/leads/[id]/page.tsx</div>
+        <div class="filedesc">Client — detail, status, followup form</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow-col">→</div>
+
+    <!-- API -->
+    <div class="arch-layer">
+      <div class="arch-layer-title">🔌 API Routes</div>
+
+      <div class="arch-file highlight-changed">
+        <div class="filename">app/api/leads/route.ts</div>
+        <div class="filedesc">GET (role filter) + POST</div>
+      </div>
+
+      <div class="arch-file highlight-changed">
+        <div class="filename">app/api/leads/[id]/route.ts</div>
+        <div class="filedesc">⚡ Next.js 16: params เป็น Promise<br/>ต้อง await params ก่อนใช้</div>
+      </div>
+
+      <div class="arch-file">
+        <div class="filename">app/api/followups/route.ts</div>
+        <div class="filedesc">POST — create followup note</div>
+      </div>
+    </div>
+
+    <div class="arch-arrow-col">→</div>
+
+    <!-- Data -->
+    <div class="arch-layer">
+      <div class="arch-layer-title">🗄️ Data Layer</div>
+
+      <div class="arch-file highlight-changed">
+        <div class="filename">src/lib/prisma.ts</div>
+        <div class="filedesc">⚡ Prisma 7: ใช้ PrismaLibSql adapter<br/>import จาก @/generated/prisma/client</div>
+      </div>
+
+      <div class="arch-file highlight-new">
+        <div class="filename">prisma.config.ts</div>
+        <div class="filedesc">✨ Prisma 7: config ไฟล์ใหม่<br/>datasource URL + seed command</div>
+      </div>
+
+      <div class="arch-file highlight-changed">
+        <div class="filename">prisma/schema.prisma</div>
+        <div class="filedesc">⚡ provider="prisma-client"<br/>output="../src/generated/prisma"<br/>ไม่มี url ใน datasource</div>
+      </div>
+
+      <div class="arch-file highlight-changed">
+        <div class="filename">prisma/seed.ts</div>
+        <div class="filedesc">⚡ import dotenv/config<br/>ใช้ PrismaLibSql adapter<br/>รันด้วย tsx (ไม่ใช่ ts-node)</div>
+      </div>
+
+      <div class="arch-file">
+        <div class="filename">dev.db</div>
+        <div class="filedesc">SQLite database</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="callout">
+    <strong>Prisma 7 path:</strong> Client อยู่ที่ <code>src/generated/prisma/client</code> — ไม่ใช่ <code>@prisma/client</code> อีกต่อไป<br/>
+    <strong>Next.js 16 params:</strong> route handler ต้อง <code>const &#123; id &#125; = await params</code> เพราะ params เป็น Promise
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- DIAGRAM 3: BUILD ORDER                                         -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">Diagram 3 — Build Order</div>
+  <div class="diagram-label">ลำดับขั้นตอนที่สร้างระบบจริง (8 Step)</div>
+
+  <div class="steps-grid">
+
+    <div class="step-card done-step">
+      <div class="step-num">01</div>
+      <div class="step-title">Create Project & Config</div>
+      <div class="step-files">
+        <div class="step-file">npx create-next-app@latest</div>
+        <div class="step-file">.env</div>
+        <div class="step-file changed-file">prisma.config.ts ✨ Prisma 7</div>
+        <div class="step-file">prisma/schema.prisma</div>
+      </div>
+      <div class="step-note">⚡ Prisma 7: ต้องมี prisma.config.ts แยก — datasource URL ไม่ใส่ใน schema</div>
+    </div>
+
+    <div class="step-card done-step">
+      <div class="step-num">02</div>
+      <div class="step-title">Database & Seed</div>
+      <div class="step-files">
+        <div class="step-file">npm install prisma @prisma/adapter-libsql @libsql/client</div>
+        <div class="step-file">npx prisma migrate dev</div>
+        <div class="step-file changed-file">prisma/seed.ts — PrismaLibSql adapter</div>
+        <div class="step-file changed-file">tsx (ไม่ใช่ ts-node)</div>
+      </div>
+      <div class="step-note">⚡ Prisma 7 ต้องมี adapter ถึงจะ run ได้ / seed ใช้ tsx เพราะ ESM</div>
+    </div>
+
+    <div class="step-card done-step">
+      <div class="step-num">03</div>
+      <div class="step-title">Auth Setup</div>
+      <div class="step-files">
+        <div class="step-file">npm install next-auth bcryptjs</div>
+        <div class="step-file">src/lib/auth.ts</div>
+        <div class="step-file">src/types/index.ts</div>
+        <div class="step-file">app/api/auth/[...nextauth]/route.ts</div>
+      </div>
+    </div>
+
+    <div class="step-card done-step">
+      <div class="step-num">04</div>
+      <div class="step-title">Proxy (Middleware)</div>
+      <div class="step-files">
+        <div class="step-file changed-file">src/proxy.ts ← ชื่อเปลี่ยน!</div>
+        <div class="step-file changed-file">export function proxy</div>
+        <div class="step-file">matcher: /crm/:path*, /login</div>
+      </div>
+      <div class="step-note">⚡ Next.js 16: middleware.ts → proxy.ts / export ชื่อ proxy</div>
+    </div>
+
+    <div class="step-card done-step">
+      <div class="step-num">05</div>
+      <div class="step-title">Layout & Providers</div>
+      <div class="step-files">
+        <div class="step-file">app/(auth)/layout.tsx</div>
+        <div class="step-file new-file">src/components/Providers.tsx ✨</div>
+        <div class="step-file changed-file">app/(dashboard)/layout.tsx</div>
+        <div class="step-file">src/components/layout/Sidebar.tsx</div>
+      </div>
+      <div class="step-note">✨ Providers.tsx แก้ปัญหา SessionProvider ใน Server Component</div>
+    </div>
+
+    <div class="step-card done-step">
+      <div class="step-num">06</div>
+      <div class="step-title">Login Page</div>
+      <div class="step-files">
+        <div class="step-file">app/(auth)/login/page.tsx</div>
+        <div class="step-file">signIn('credentials', ...)</div>
+        <div class="step-file">redirect หลัง login → /crm/dashboard</div>
+      </div>
+    </div>
+
+    <div class="step-card done-step">
+      <div class="step-num">07</div>
+      <div class="step-title">API Routes</div>
+      <div class="step-files">
+        <div class="step-file">app/api/leads/route.ts</div>
+        <div class="step-file changed-file">app/api/leads/[id]/route.ts</div>
+        <div class="step-file changed-file">await params — Next.js 16</div>
+        <div class="step-file">app/api/followups/route.ts</div>
+      </div>
+      <div class="step-note">⚡ [id] route: params เป็น Promise → ต้อง await ก่อนใช้</div>
+    </div>
+
+    <div class="step-card done-step">
+      <div class="step-num">08</div>
+      <div class="step-title">CRM Pages</div>
+      <div class="step-files">
+        <div class="step-file">crm/dashboard/page.tsx</div>
+        <div class="step-file">crm/leads/page.tsx</div>
+        <div class="step-file">crm/leads/new/page.tsx</div>
+        <div class="step-file">crm/leads/[id]/page.tsx</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="callout" style="margin-top: 24px;">
+    <strong>ขั้นตอนถัดไป (Stock Module):</strong>
+    เพิ่ม Unit model ใน schema.prisma → migrate → สร้าง /stock page → filter Lead ที่ BOOKING_INTENT → เลือก Unit → ยืนยัน BOOKED
+  </div>
+</div>
+
+<p style="text-align:center; color:#1e293b; font-size:0.8rem; margin-top:32px;">
+  CRM System Phase 1 · Next.js 16.2.6 · Prisma 7.8.0 · NextAuth v4 · SQLite
+</p>
+
+</body>
+</html>

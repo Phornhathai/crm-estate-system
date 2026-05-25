@@ -1,13 +1,13 @@
-import { SessionProvider } from 'next-auth/react'
+import Providers from '@/components/Providers'
 import Sidebar from '@/components/layout/Sidebar'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider>
+    <Providers>
       <div className="flex h-screen bg-gray-50">
         <Sidebar />
         <main className="flex-1 overflow-auto p-6">{children}</main>
       </div>
-    </SessionProvider>
+    </Providers>
   )
 }

@@ -7,6 +7,7 @@ import { signOut, useSession } from 'next-auth/react'
 const navItems = [
   { href: '/crm/dashboard', label: 'Dashboard', icon: '📊' },
   { href: '/crm/leads', label: 'Leads', icon: '👥' },
+  { href: '/crm/users', label: 'จัดการผู้ใช้', icon: '⚙️', ownerOnly: true },
 ]
 
 export default function Sidebar() {
@@ -20,7 +21,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 p-3 space-y-1">
-        {navItems.map(item => (
+        {navItems.filter(item => !item.ownerOnly || session?.user?.role === 'OWNER').map(item => (
           <Link
             key={item.href}
             href={item.href}

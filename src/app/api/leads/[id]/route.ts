@@ -53,6 +53,13 @@ export async function PUT(
       ...(body.phone && { phone: body.phone }),
       ...(body.detail !== undefined && { detail: body.detail }),
       ...(body.status && { status: body.status }),
+      ...(body.source !== undefined && { source: body.source || null }),
+      ...(body.interestType !== undefined && { interestType: body.interestType || null }),
+      ...(body.unitPrice !== undefined && { unitPrice: body.unitPrice ? parseFloat(body.unitPrice) : null }),
+      ...(body.hasCoAgent !== undefined && { hasCoAgent: body.hasCoAgent }),
+      ...(body.coAgentFee !== undefined && { coAgentFee: body.coAgentFee ? parseFloat(body.coAgentFee) : null }),
+      ...(body.commissionRate !== undefined && { commissionRate: body.commissionRate ? parseFloat(body.commissionRate) : null }),
+      ...(body.netCommission !== undefined && { netCommission: body.netCommission ? parseFloat(body.netCommission) : null }),
     },
   })
 

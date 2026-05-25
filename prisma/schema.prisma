@@ -24,24 +24,46 @@ enum Role {
 }
 
 model Lead {
-  id        String     @id @default(cuid())
-  name      String
-  phone     String
-  detail    String?
-  status    LeadStatus @default(NEW)
-  saler     User       @relation(fields: [salerId], references: [id])
-  salerId   String
-  followUps FollowUp[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id             String        @id @default(cuid())
+  name           String
+  phone          String
+  detail         String?
+  status         LeadStatus    @default(NEW)
+  source         LeadSource?
+  interestType   InterestType?
+  unitPrice      Float?
+  hasCoAgent     Boolean       @default(false)
+  coAgentFee     Float?
+  commissionRate Float?
+  netCommission  Float?
+  saler          User          @relation(fields: [salerId], references: [id])
+  salerId        String
+  followUps      FollowUp[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+enum LeadSource {
+  OWNER
+  WALKIN
+  ONLINE
+  TOURING
+}
+
+enum InterestType {
+  SELLING
+  RENTAL
 }
 
 enum LeadStatus {
   NEW
   FOLLOWING
+  TOURING
   BOOKING_INTENT
   BOOKED
+  SUCCESS
   LOST
+  IGNORE
 }
 
 model FollowUp {

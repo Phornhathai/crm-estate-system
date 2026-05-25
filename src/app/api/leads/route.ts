@@ -23,11 +23,25 @@ export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions)
   if (!session) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { name, phone, detail } = await request.json()
+  const body = await request.json()
+  const { name, phone, detail, source, interestType, unitPrice, hasCoAgent, coAgentFee, commissionRate, netCommission } = body
+
   if (!name || !phone) return Response.json({ error: 'name and phone required' }, { status: 400 })
 
   const lead = await prisma.lead.create({
-    data: { name, phone, detail, salerId: session.user.id },
+    data: {
+      name,
+      phone,
+      detail,
+      source: source || null,
+      interestType: interestType || null,
+      unitPrice: unitPrice ? parseFloat(unitPrice) : null,
+      hasCoAgent: hasCoAgent || false,
+      coAgentFee: coAgentFee ? parseFloat(coAgentFee) : null,
+      commissionRate: commissionRate ? parseFloat(commissionRate) : null,
+      netCommission: netCommission ? parseFloat(netCommission) : null,
+      salerId: session.user.id,
+    },
   })
 
   return Response.json(lead, { status: 201 })

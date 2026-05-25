@@ -5,12 +5,20 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
 const statusLabel: Record<string, string> = {
-  NEW: 'ใหม่', FOLLOWING: 'ติดตาม', BOOKING_INTENT: 'สนใจจอง', BOOKED: 'จองแล้ว', LOST: 'หลุด',
+  NEW: 'ใหม่', FOLLOWING: 'ติดตาม', TOURING: 'Touring',
+  BOOKING_INTENT: 'สนใจจอง', BOOKED: 'จองแล้ว',
+  SUCCESS: 'สำเร็จ', LOST: 'หลุด', IGNORE: 'Ignore',
 }
 const statusColor: Record<string, string> = {
   NEW: 'bg-gray-100 text-gray-600', FOLLOWING: 'bg-blue-100 text-blue-700',
+  TOURING: 'bg-indigo-100 text-indigo-700',
   BOOKING_INTENT: 'bg-yellow-100 text-yellow-700', BOOKED: 'bg-green-100 text-green-700',
-  LOST: 'bg-red-100 text-red-600',
+  SUCCESS: 'bg-emerald-100 text-emerald-700', LOST: 'bg-red-100 text-red-600',
+  IGNORE: 'bg-gray-200 text-gray-500',
+}
+
+const sourceLabel: Record<string, string> = {
+  OWNER: 'Owner', WALKIN: 'Walk-in', ONLINE: 'Online', TOURING: 'Touring',
 }
 
 export default async function LeadsPage() {
@@ -58,6 +66,11 @@ export default async function LeadsPage() {
                   <p className="text-xs text-gray-400 mt-0.5 truncate max-w-xs">{lead.detail}</p>
                 )}
               </div>
+              {lead.source && (
+                <span className="text-xs text-gray-400 hidden md:block">
+                  {sourceLabel[lead.source] || lead.source}
+                </span>
+              )}
               {session.user.role === 'OWNER' && (
                 <p className="text-xs text-gray-400 hidden md:block min-w-24 text-right">{lead.saler.name}</p>
               )}

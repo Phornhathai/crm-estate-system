@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { PrismaClient, Role, LeadStatus } from '../src/generated/prisma/client'
+import { PrismaClient, Role, LeadStatus, LeadSource, InterestType } from '../src/generated/prisma/client'
 import { PrismaLibSql } from '@prisma/adapter-libsql'
 import bcrypt from 'bcryptjs'
 
@@ -14,7 +14,7 @@ async function main() {
     where: { email: 'owner@crm.com' },
     update: {},
     create: {
-      name: 'คุณสมชาย (Owner)',
+      name: 'คุณ Boat (Owner)',
       email: 'owner@crm.com',
       password: await bcrypt.hash('password123', 10),
       role: Role.OWNER,
@@ -49,6 +49,13 @@ async function main() {
       phone: '081-234-5678',
       detail: 'สนใจคอนโด 2 ห้องนอน ราคาไม่เกิน 3 ล้าน',
       status: LeadStatus.FOLLOWING,
+      source: LeadSource.WALKIN,
+      interestType: InterestType.SELLING,
+      unitPrice: 2500000,
+      commissionRate: 3,
+      hasCoAgent: true,
+      coAgentFee: 0.5,
+      netCommission: 62500,
       salerId: sale1.id,
     },
   })
@@ -57,8 +64,14 @@ async function main() {
     data: {
       name: 'นางสาวรัตนา พงษ์ดี',
       phone: '089-876-5432',
-      detail: 'ต้องการบ้านเดี่ยว ใกล้โรงเรียน',
+      detail: 'ต้องการเช่าคอนโดใกล้ BTS',
       status: LeadStatus.BOOKING_INTENT,
+      source: LeadSource.ONLINE,
+      interestType: InterestType.RENTAL,
+      unitPrice: 25000,
+      hasCoAgent: true,
+      coAgentFee: 5000,
+      netCommission: 20000,
       salerId: sale1.id,
     },
   })
@@ -68,6 +81,10 @@ async function main() {
       name: 'นายธนา สุขสม',
       phone: '062-111-2222',
       status: LeadStatus.NEW,
+      source: LeadSource.OWNER,
+      interestType: InterestType.SELLING,
+      unitPrice: 5000000,
+      commissionRate: 3,
       salerId: sale2.id,
     },
   })

@@ -25,10 +25,10 @@ export default async function DashboardPage() {
   if (!session) redirect('/login?error=unauthorized')
 
   const now = new Date()
+  const isOwner = session.user.role === 'OWNER'
   let leads, totalLeads, statsByStatus, monthlyLeads
   try {
-    const isOwnerCheck = session.user.role === 'OWNER'
-    const baseWhere = isOwnerCheck ? {} : { salerId: session.user.id }
+    const baseWhere = isOwner ? {} : { salerId: session.user.id }
     const activeWhere = { ...baseWhere, status: { not: 'IGNORE' as const } }
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
     const monthWhere = { ...baseWhere, createdAt: { gte: monthStart }, status: { not: 'IGNORE' as const } }

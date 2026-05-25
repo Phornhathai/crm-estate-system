@@ -16,7 +16,7 @@ async function main() {
     create: {
       name: 'คุณ Boat (Owner)',
       email: 'owner@crm.com',
-      password: await bcrypt.hash('password123', 10),
+      password: await bcrypt.hash('Boat@CRM2026!', 10),
       role: Role.OWNER,
     },
   })
@@ -27,7 +27,7 @@ async function main() {
     create: {
       name: 'คุณมานี (Sale)',
       email: 'sale1@crm.com',
-      password: await bcrypt.hash('password123', 10),
+      password: await bcrypt.hash('password123!', 10),
       role: Role.SALE,
     },
   })
@@ -38,7 +38,7 @@ async function main() {
     create: {
       name: 'คุณวิชัย (Sale)',
       email: 'sale2@crm.com',
-      password: await bcrypt.hash('password123', 10),
+      password: await bcrypt.hash('password123!', 10),
       role: Role.SALE,
     },
   })

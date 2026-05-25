@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM System — Planning Diagrams (As Built)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 40px 24px;
+    }
+    h1.page-title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 8px;
+    }
+    .page-subtitle {
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 48px;
+    }
+    .badge-asbuilt {
+      display: inline-block;
+      background: #22c55e;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 99px;
+      vertical-align: middle;
+      margin-left: 8px;
+      letter-spacing: .5px;
+    }
+    .diagram-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+    }
+    .diagram-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 24px;
+    }
+
+    /* ======= DIAGRAM 1: Phase 1 Overview ======= */
+    .section {
+      max-width: 960px;
+      margin: 0 auto 64px;
+    }
+    .card-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .card-grid-2 { grid-template-columns: 1fr 1fr; }
+    .card-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .card-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .card-title { font-size: 15px; font-weight: 700; color: #f1f5f9; }
+    .card-subtitle { font-size: 12px; color: #64748b; }
+    .feature-list { list-style: none; }
+    .feature-list li {
+      font-size: 13px;
+      color: #cbd5e1;
+      padding: 4px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    .feature-list li::before {
+      content: '✓';
+      position: absolute; left: 0;
+      color: #22c55e;
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .feature-list li.warn::before { content: '⚠️'; font-size: 11px; }
+    .feature-list li.note { color: #94a3b8; font-size: 12px; }
+    .feature-list li.note::before { content: '→'; color: #60a5fa; }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin: 2px 2px 0 0;
+    }
+    .tag-blue { background: #1e3a5f; color: #60a5fa; }
+    .tag-green { background: #14532d; color: #4ade80; }
+    .tag-purple { background: #3b1f6e; color: #c084fc; }
+    .tag-yellow { background: #422006; color: #fbbf24; }
+    .tag-red { background: #4c0519; color: #f87171; }
+
+    .flow-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 16px;
+    }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+    .flow-step {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      padding: 6px 12px;
+      color: #e2e8f0;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .flow-arrow { color: #60a5fa; font-size: 16px; }
+    .flow-note { font-size: 11px; color: #94a3b8; margin-top: 8px; }
+
+    /* ======= DIAGRAM 2: Architecture ======= */
+    .arch-layer {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .arch-layer-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      border-bottom: 1px solid #334155;
+    }
+    .layer-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .layer-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      min-width: 80px;
+    }
+    .layer-desc { font-size: 12px; color: #64748b; }
+    .arch-layer-body {
+      padding: 12px 20px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .file-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: #e2e8f0;
+    }
+    .file-chip .fi { font-size: 13px; }
+    .file-chip.new { border-color: #22c55e; color: #4ade80; }
+    .file-chip.changed { border-color: #f59e0b; color: #fbbf24; }
+    .file-chip.breaking { border-color: #ef4444; color: #f87171; }
+    .chip-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+    .chip-badge.new { background: #14532d; color: #4ade80; font-family: 'Sarabun', sans-serif; }
+    .chip-badge.changed { background: #422006; color: #fbbf24; font-family: 'Sarabun', sans-serif; }
+    .chip-badge.breaking { background: #4c0519; color: #f87171; font-family: 'Sarabun', sans-serif; }
+    .legend {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 3px;
+    }
+
+    /* ======= DIAGRAM 3: Build Order ======= */
+    .step-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 10px;
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .step-num {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .step-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 6px;
+    }
+    .step-body { font-size: 13px; color: #94a3b8; margin-bottom: 8px; }
+    .code-block {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: #e2e8f0;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+    .code-block .cmt { color: #475569; }
+    .code-block .cmd { color: #60a5fa; }
+    .code-block .kw  { color: #c084fc; }
+    .code-block .str { color: #4ade80; }
+    .code-block .typ { color: #fbbf24; }
+    .code-block .err { color: #f87171; text-decoration: line-through; }
+    .code-block .ok  { color: #22c55e; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #1e293b;
+      margin: 48px 0;
+    }
+
+    .note-box {
+      background: #1c2a1a;
+      border: 1px solid #166534;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #86efac;
+      margin-top: 12px;
+    }
+    .warn-box {
+      background: #1c1007;
+      border: 1px solid #92400e;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #fcd34d;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .card-grid-2, .card-grid-3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<h1 class="page-title">CRM System — Planning Diagrams <span class="badge-asbuilt">AS BUILT</span></h1>
+<p class="page-subtitle">อัปเดตให้สอดคล้องกับระบบจริงที่สร้างขึ้น · Phase 1 · May 2569</p>
+
+<!-- ═══════════════════════════════════════════════
+     DIAGRAM 1: Phase 1 Overview
+════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="diagram-label">Diagram 1 of 3</div>
+  <div class="diagram-title">Phase 1 — Scope & Deliverables</div>
+
+  <div class="card-grid card-grid-2" style="margin-bottom:16px;">
+
+    <!-- CRM Module -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#1e3a5f;">👥</div>
+        <div>
+          <div class="card-title">CRM Module</div>
+          <div class="card-subtitle">ระบบจัดการลูกค้า</div>
+        </div>
+      </div>
+      <ul class="feature-list">
+        <li>Lead — เพิ่ม / ดู / เปลี่ยนสถานะ</li>
+        <li>FollowUp — บันทึกประวัติการติดตาม</li>
+        <li>Dashboard — สถิติตามสิทธิ์ผู้ใช้</li>
+        <li>Role-based access (Sale / Owner)</li>
+        <li class="note">Lead status: NEW → FOLLOWING → BOOKING_INTENT → BOOKED / LOST</li>
+      </ul>
+      <div style="margin-top:10px;">
+        <span class="tag tag-green">✅ Done</span>
+      </div>
+    </div>
+
+    <!-- Stock Module -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#3b1f6e;">🏠</div>
+        <div>
+          <div class="card-title">Stock Module</div>
+          <div class="card-subtitle">ระบบยูนิต / ห้อง</div>
+        </div>
+      </div>
+      <ul class="feature-list">
+        <li>รายการยูนิตทั้งหมด (Unit list)</li>
+        <li>รายการ Pending booking จาก CRM</li>
+        <li>เลือกยูนิต + ยืนยันการจอง</li>
+        <li>Unit status: AVAILABLE → BOOKED</li>
+        <li class="warn">CRM→Stock Link: กึ่งอัตโนมัติ (ต้องกด confirm)</li>
+      </ul>
+      <div style="margin-top:10px;">
+        <span class="tag tag-yellow">⏳ Phase 1 Remaining</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card-grid card-grid-3" style="margin-bottom:16px;">
+
+    <!-- Role: Sale -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#14532d;">🧑‍💼</div>
+        <div><div class="card-title">Role: Sale</div></div>
+      </div>
+      <ul class="feature-list">
+        <li>Login + Dashboard (ของตัวเอง)</li>
+        <li>Lead ของตัวเองเท่านั้น</li>
+        <li>เพิ่ม Lead → assign ตัวเองอัตโนมัติ</li>
+        <li>เปลี่ยนสถานะ Lead ของตัวเอง</li>
+        <li>บันทึก Follow Up</li>
+      </ul>
+    </div>
+
+    <!-- Role: Owner -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#422006;">👑</div>
+        <div><div class="card-title">Role: Owner</div></div>
+      </div>
+      <ul class="feature-list">
+        <li>Dashboard ภาพรวมทุก Sale</li>
+        <li>ดู Lead ทุกรายการ (ของทุกคน)</li>
+        <li>เพิ่ม / แก้ไข Lead ทุกรายการ</li>
+        <li>ลบ Lead (ไม่สามารถกู้คืนได้)</li>
+        <li>บันทึก Follow Up ได้ทุก Lead</li>
+      </ul>
+    </div>
+
+    <!-- Tech Stack -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:#1e293b; border:1px solid #334155;">⚙️</div>
+        <div><div class="card-title">Tech Stack</div></div>
+      </div>
+      <ul class="feature-list">
+        <li>Next.js 16.2.6 (App Router)</li>
+        <li>Prisma 7.8.0 + libsql adapter</li>
+        <li>NextAuth v4 + JWT strategy</li>
+        <li>SQLite (dev.db)</li>
+        <li>Tailwind CSS</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- CRM→Stock Flow -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom:12px;">CRM → Stock Flow (Phase 1 — กึ่งอัตโนมัติ)</div>
+    <div class="flow-box">
+      <div class="flow-row">
+        <div class="flow-step">Sale เปลี่ยน Lead<br/>→ BOOKING_INTENT</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Lead ปรากฏใน<br/>Stock (Pending list)</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Owner เลือก Unit<br/>+ ยืนยันการจอง</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Lead → BOOKED<br/>Unit → BOOKED</div>
+      </div>
+      <div class="flow-note">⚠️ การเปลี่ยนสถานะไม่เกิดขึ้นอัตโนมัติ — ต้องมีการยืนยันจากผู้ใช้ในระบบ Stock</div>
+    </div>
+  </div>
+
+  <!-- Seed Data -->
+  <div class="note-box" style="margin-top:12px;">
+    📦 <strong>Seed Data (ข้อมูลตั้งต้น):</strong>&nbsp;
+    owner@crm.com (Owner) + sale1@crm.com + sale2@crm.com (Sale) · 3 Leads · 3 FollowUps · รหัสผ่านทุกคน: <code>password123</code>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ═══════════════════════════════════════════════
+     DIAGRAM 2: Architecture / File Structure
+════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="diagram-label">Diagram 2 of 3</div>
+  <div class="diagram-title">Architecture — File Structure (As Built)</div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#22c55e;"></div> ไฟล์ใหม่ (ไม่ได้อยู่ในแผนเดิม)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div> เปลี่ยนแปลงจากแผนเดิม</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ef4444;"></div> Breaking change (Next.js 16 / Prisma 7)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#475569;"></div> ตามแผนเดิม</div>
+  </div>
+
+  <!-- Entry / Config -->
+  <div class="arch-layer">
+    <div class="arch-layer-header">
+      <div class="layer-dot" style="background:#64748b;"></div>
+      <div class="layer-name">Config</div>
+      <div class="layer-desc">Root-level configuration</div>
+    </div>
+    <div class="arch-layer-body">
+      <div class="file-chip"><span class="fi">📄</span>.env</div>
+      <div class="file-chip"><span class="fi">📄</span>prisma.config.ts <span class="chip-badge changed">changed</span></div>
+      <div class="file-chip"><span class="fi">📄</span>next.config.js</div>
+      <div class="file-chip"><span class="fi">📄</span>tailwind.config.ts</div>
+    </div>
+  </div>
+
+  <!-- Entry / Proxy -->
+  <div class="arch-layer">
+    <div class="arch-layer-header">
+      <div class="layer-dot" style="background:#ef4444;"></div>
+      <div class="layer-name">Entry</div>
+      <div class="layer-desc">Route guard — Next.js 16 Breaking Change</div>
+    </div>
+    <div class="arch-layer-body">
+      <div class="file-chip breaking"><span class="fi">🔀</span>src/proxy.ts <span class="chip-badge breaking">renamed</span></div>
+    </div>
+  </div>
+  <div class="warn-box" style="margin-bottom:8px;">
+    ⚠️ Next.js 16 ยกเลิก <code>middleware.ts</code> → ต้องใช้ <code>src/proxy.ts</code> และ export <code>proxy</code> แทน <code>middleware</code>
+  </div>
+
+  <!-- Auth -->
+  <div class="arch-layer">
+    <div class="arch-layer-header">
+      <div class="layer-dot" style="background:#c084fc;"></div>
+      <div class="layer-name">Auth</div>
+      <div class="layer-desc">NextAuth v4 + JWT + CredentialsProvider</div>
+    </div>
+    <div class="arch-layer-body">
+      <div class="file-chip"><span class="fi">🔑</span>src/lib/auth.ts</div>
+      <div class="file-chip"><span class="fi">📡</span>src/app/api/auth/[...nextauth]/route.ts</div>
+      <div class="file-chip"><span class="fi">📝</span>src/types/index.ts <span class="chip-badge changed">augmented</span></div>
+    </div>
+  </div>
+
+  <!-- Layout / Providers -->
+  <div class="arch-layer">
+    <div class="arch-layer-header">
+      <div class="layer-dot" style="background:#f59e0b;"></div>
+      <div class="layer-name">Layout</div>
+      <div class="layer-desc">App shell — Client Component wrapper required</div>
+    </div>
+    <div class="arch-layer-body">
+      <div class="file-chip"><span class="fi">🗂️</span>src/app/(auth)/layout.tsx</div>
+      <div class="file-chip"><span class="fi">🗂️</span>src/app/(dashboard)/layout.tsx <span class="chip-badge changed">changed</span></div>
+      <div class="file-chip new"><span class="fi">⚛️</span>src/components/Providers.tsx <span class="chip-badge new">new</span></div>
+      <div class="file-chip"><span class="fi">📐</span>src/components/layout/Sidebar.tsx</div>
+    </div>
+  </div>
+  <div class="warn-box" style="margin-bottom:8px;">
+    ⚠️ <code>SessionProvider</code> ใช้ใน Server Component ไม่ได้ → ต้อง wrap ใน <code>Providers.tsx</code> ที่มี <code>'use client'</code>
+  </div>
+
+  <!-- Pages -->
+  <div class="arch-layer">
+    <div class="arch-layer-header">
+      <div class="layer-dot" style="background:#60a5fa;"></div>
+      <div class="layer-name">Pages</div>
+      <div class="layer-desc">App Router pages</div>
+    </div>
+    <div class="arch-layer-body">
+      <div class="file-chip"><span class="fi">🔐</span>src/app/(auth)/login/page.tsx</div>
+      <div class="file-chip"><span class="fi">📊</span>src/app/(dashboard)/crm/dashboard/page.tsx</div>
+      <div class="file-chip"><span class="fi">📋</span>src/app/(dashboard)/crm/leads/page.tsx</div>
+      <div class="file-chip"><span class="fi">🔍</span>src/app/(dashboard)/crm/leads/[id]/page.tsx</div>
+    </div>
+  </div>
+
+  <!-- API Routes -->
+  <div class="arch-layer">
+    <div class="arch-layer-header">
+      <div class="layer-dot" style="background:#f472b6;"></div>
+      <div class="layer-name">API</div>
+      <div class="layer-desc">Route Handlers — params เป็น Promise (Next.js 16)</div>
+    </div>
+    <div class="arch-layer-body">
+      <div class="file-chip changed"><span class="fi">📡</span>src/app/api/leads/route.ts <span class="chip-badge changed">await params</span></div>
+      <div class="file-chip changed"><span class="fi">📡</span>src/app/api/leads/[id]/route.ts <span class="chip-badge changed">await params</span></div>
+      <div class="file-chip"><span class="fi">📡</span>src/app/api/leads/[id]/followups/route.ts</div>
+    </div>
+  </div>
+  <div class="warn-box" style="margin-bottom:8px;">
+    ⚠️ Next.js 16: <code>params</code> ใน Route Handler เป็น <code>Promise</code> → ต้อง <code>await params</code> ก่อนใช้ <code>id</code>
+  </div>
+
+  <!-- Data Layer -->
+  <div class="arch-layer">
+    <div class="arch-layer-header">
+      <div class="layer-dot" style="background:#4ade80;"></div>
+      <div class="layer-name">Data</div>
+      <div class="layer-desc">Prisma 7 + libsql adapter + SQLite</div>
+    </div>
+    <div class="arch-layer-body">
+      <div class="file-chip changed"><span class="fi">🗄️</span>prisma/schema.prisma <span class="chip-badge changed">Prisma 7</span></div>
+      <div class="file-chip changed"><span class="fi">🌱</span>prisma/seed.ts <span class="chip-badge changed">tsx + adapter</span></div>
+      <div class="file-chip changed"><span class="fi">🔌</span>src/lib/prisma.ts <span class="chip-badge changed">libsql adapter</span></div>
+      <div class="file-chip new"><span class="fi">📦</span>src/generated/prisma/client <span class="chip-badge new">generated</span></div>
+    </div>
+  </div>
+  <div class="warn-box">
+    ⚠️ Prisma 7 Breaking Changes:<br/>
+    • generator provider: <code>"prisma-client"</code> (ไม่ใช่ <code>"prisma-client-js"</code>)<br/>
+    • output: <code>../src/generated/prisma</code> → import path: <code>@/generated/prisma/client</code><br/>
+    • ไม่มี <code>url</code> ใน <code>datasource db</code> block → ย้ายไป <code>prisma.config.ts</code><br/>
+    • <code>PrismaClient</code> ต้องใช้ adapter → ติดตั้ง <code>@prisma/adapter-libsql</code> + <code>@libsql/client</code>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ═══════════════════════════════════════════════
+     DIAGRAM 3: Build Order
+════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="diagram-label">Diagram 3 of 3</div>
+  <div class="diagram-title">Build Order — 8 Steps (As Built)</div>
+
+  <!-- Step 1 -->
+  <div class="step-card">
+    <div class="step-num" style="background:#3b82f6;">1</div>
+    <div>
+      <div class="step-title">Project Setup</div>
+      <div class="step-body">สร้าง Next.js project + ติดตั้ง dependencies ทั้งหมด</div>
+      <div class="code-block"><span class="cmt"># สร้าง project (ถ้ายังไม่มี)</span>
+<span class="cmd">npx create-next-app@latest</span> crm-project <span class="cmt">\</span>
+  --typescript --tailwind --app --src-dir
+
+<span class="cmt"># ติดตั้ง dependencies หลัก</span>
+<span class="cmd">npm install</span> next-auth prisma @prisma/adapter-libsql @libsql/client dotenv
+
+<span class="cmt"># ติดตั้ง dev dependencies</span>
+<span class="cmd">npm install -D</span> tsx</div>
+      <div class="note-box">✅ ใช้ <code>npm</code> เท่านั้น (ไม่ใช่ yarn)</div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step-card">
+    <div class="step-num" style="background:#8b5cf6;">2</div>
+    <div>
+      <div class="step-title">Prisma Schema + Config</div>
+      <div class="step-body">ตั้งค่า Prisma 7 — แยก config ออกจาก schema</div>
+      <div class="code-block"><span class="cmt"># prisma/schema.prisma</span>
+generator client {
+  provider = <span class="str">"prisma-client"</span>       <span class="cmt"># ⚠️ ไม่ใช่ "prisma-client-js"</span>
+  output   = <span class="str">"../src/generated/prisma"</span>
+}
+datasource db {
+  provider = <span class="str">"sqlite"</span>
+  <span class="err">url      = env("DATABASE_URL")</span>  <span class="cmt"># ⚠️ Prisma 7: ห้ามใส่ url ที่นี่</span>
+}
+
+<span class="cmt"># prisma.config.ts — URL อยู่ที่นี่แทน</span>
+<span class="kw">export default</span> defineConfig({
+  schema: <span class="str">"prisma/schema.prisma"</span>,
+  migrations: { seed: <span class="str">"tsx prisma/seed.ts"</span> },
+  datasource: { url: process.env[<span class="str">"DATABASE_URL"</span>] },
+})</div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step-card">
+    <div class="step-num" style="background:#10b981;">3</div>
+    <div>
+      <div class="step-title">Generate Client + Migrate + Seed</div>
+      <div class="step-body">สร้าง Prisma Client, migrate database, ใส่ข้อมูลตัวอย่าง</div>
+      <div class="code-block"><span class="cmd">npx prisma generate</span>
+<span class="cmd">npx prisma migrate dev</span> --name init
+<span class="cmd">npx prisma migrate dev</span> --name seed
+
+<span class="cmt"># Seed data: 1 Owner + 2 Sale + 3 Leads + 3 FollowUps</span>
+<span class="cmt"># owner@crm.com / sale1@crm.com / sale2@crm.com → password: password123</span>
+
+<span class="cmt"># seed.ts ต้องใช้ adapter (Prisma 7 requirement)</span>
+<span class="kw">const</span> adapter = <span class="kw">new</span> <span class="typ">PrismaLibSql</span>({ url: process.env.DATABASE_URL })
+<span class="kw">const</span> prisma  = <span class="kw">new</span> <span class="typ">PrismaClient</span>({ adapter } <span class="kw">as any</span>)</div>
+      <div class="warn-box">⚠️ ใช้ <code>tsx</code> รัน seed (ไม่ใช่ ts-node) เพราะ generated client ใช้ ESM</div>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step-card">
+    <div class="step-num" style="background:#f59e0b;">4</div>
+    <div>
+      <div class="step-title">Auth Setup (NextAuth v4)</div>
+      <div class="step-body">ตั้งค่า NextAuth + JWT strategy + role ใน session</div>
+      <div class="code-block"><span class="cmt"># src/lib/auth.ts — CredentialsProvider + JWT + role</span>
+<span class="cmt"># src/app/api/auth/[...nextauth]/route.ts — export handler</span>
+<span class="cmt"># src/types/index.ts — augment Session type ให้มี id + role</span>
+
+<span class="cmt"># .env</span>
+DATABASE_URL=<span class="str">"file:./dev.db"</span>
+NEXTAUTH_SECRET=<span class="str">"crm-secret-key-change-in-production"</span>
+NEXTAUTH_URL=<span class="str">"http://localhost:3000"</span></div>
+    </div>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="step-card">
+    <div class="step-num" style="background:#ef4444;">5</div>
+    <div>
+      <div class="step-title">Proxy + Layout (Next.js 16 Breaking Changes)</div>
+      <div class="step-body">Route guard + App shell — ต้องแก้ไขตาม Next.js 16</div>
+      <div class="code-block"><span class="cmt"># ⚠️ Next.js 16: middleware.ts → proxy.ts</span>
+<span class="cmt"># src/proxy.ts</span>
+<span class="kw">export async function</span> <span class="ok">proxy</span>(request: <span class="typ">NextRequest</span>) { ... }
+<span class="kw">export const</span> config = { matcher: [<span class="str">'/crm/:path*'</span>, <span class="str">'/login'</span>] }
+
+<span class="cmt"># ⚠️ SessionProvider ใน Server Component ไม่ได้</span>
+<span class="cmt"># ต้องสร้าง src/components/Providers.tsx ('use client')</span>
+<span class="kw">'use client'</span>
+<span class="kw">export default function</span> Providers({ children }) {
+  <span class="kw">return</span> &lt;<span class="typ">SessionProvider</span>&gt;{children}&lt;/<span class="typ">SessionProvider</span>&gt;
+}
+
+<span class="cmt"># src/app/(dashboard)/layout.tsx ใช้ Providers แทน SessionProvider โดยตรง</span></div>
+    </div>
+  </div>
+
+  <!-- Step 6 -->
+  <div class="step-card">
+    <div class="step-num" style="background:#06b6d4;">6</div>
+    <div>
+      <div class="step-title">API Routes (Route Handlers)</div>
+      <div class="step-body">สร้าง API สำหรับ Lead + FollowUp — ระวัง params เป็น Promise</div>
+      <div class="code-block"><span class="cmt"># src/app/api/leads/route.ts       → GET (list) + POST (create)</span>
+<span class="cmt"># src/app/api/leads/[id]/route.ts  → GET + PATCH + DELETE</span>
+<span class="cmt"># src/app/api/leads/[id]/followups/route.ts → GET + POST</span>
+
+<span class="cmt"># ⚠️ Next.js 16: params เป็น Promise</span>
+<span class="kw">export async function</span> GET(
+  _req: <span class="typ">NextRequest</span>,
+  { params }: { params: <span class="typ">Promise</span>&lt;{ id: <span class="typ">string</span> }&gt; }
+) {
+  <span class="kw">const</span> { id } = <span class="kw">await</span> params  <span class="cmt"># ⚠️ ต้อง await!</span>
+}</div>
+    </div>
+  </div>
+
+  <!-- Step 7 -->
+  <div class="step-card">
+    <div class="step-num" style="background:#ec4899;">7</div>
+    <div>
+      <div class="step-title">Pages — CRM UI</div>
+      <div class="step-body">หน้า Login, Dashboard, Lead List, Lead Detail + FollowUp</div>
+      <div class="code-block"><span class="cmt"># src/app/(auth)/login/page.tsx         → 'use client', signIn()</span>
+<span class="cmt"># src/app/(dashboard)/crm/dashboard/page.tsx → Server Component, role-based</span>
+<span class="cmt"># src/app/(dashboard)/crm/leads/page.tsx     → Lead list</span>
+<span class="cmt"># src/app/(dashboard)/crm/leads/[id]/page.tsx → Lead detail + FollowUp</span>
+
+<span class="cmt"># import Prisma client (ต้องระบุ /client ต่อท้าย)</span>
+<span class="kw">import</span> { <span class="typ">PrismaClient</span> } <span class="kw">from</span> <span class="str">'@/generated/prisma/client'</span>
+<span class="cmt">#                                  ↑ ไม่ใช่ '@prisma/client'</span></div>
+    </div>
+  </div>
+
+  <!-- Step 8 -->
+  <div class="step-card">
+    <div class="step-num" style="background:#84cc16;">8</div>
+    <div>
+      <div class="step-title">Test + Verify</div>
+      <div class="step-body">รัน dev server, ทดสอบ login ทั้ง 2 roles, ตรวจสอบ feature ครบ</div>
+      <div class="code-block"><span class="cmd">npm run dev</span>   <span class="cmt"># http://localhost:3000</span>
+
+<span class="cmt"># Test checklist:</span>
+<span class="ok">✓</span> Login: owner@crm.com / sale1@crm.com / sale2@crm.com
+<span class="ok">✓</span> Sale: เห็นเฉพาะ Lead ของตัวเอง
+<span class="ok">✓</span> Owner: เห็น Lead ทุกรายการ + ปุ่มลบ
+<span class="ok">✓</span> Dashboard: Sale เห็นสถิติตัวเอง / Owner เห็นรวม
+<span class="ok">✓</span> FollowUp: บันทึกและแสดงประวัติได้
+<span class="ok">✓</span> Status toggle: เปลี่ยนสถานะ Lead ได้</div>
+      <div class="note-box">✅ Phase 1 CRM module — เสร็จสมบูรณ์</div>
+    </div>
+  </div>
+
+  <!-- Dependency summary -->
+  <div class="card" style="margin-top:24px;">
+    <div class="card-title" style="margin-bottom:14px;">Dependencies Summary</div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+      <div>
+        <div style="font-size:11px;color:#64748b;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Dependencies</div>
+        <div class="code-block" style="font-size:11px;">next@16.2.6
+react + react-dom
+next-auth@4.24.14
+prisma@7.8.0
+@prisma/adapter-libsql
+@libsql/client
+bcryptjs
+dotenv</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#64748b;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Dev Dependencies</div>
+        <div class="code-block" style="font-size:11px;">typescript
+@types/node
+@types/react
+@types/bcryptjs
+tailwindcss
+tsx          <span class="ok"># for seed</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="text-align:center;color:#334155;font-size:12px;margin-top:32px;">
+  CRM System Phase 1 · As Built · May 2569 · สร้างด้วย Next.js 16 + Prisma 7 + NextAuth v4
+</p>
+
+</body>
+</html>
